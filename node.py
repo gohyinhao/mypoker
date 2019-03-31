@@ -40,11 +40,11 @@ class Node(object):
                     elif action == "raise":
                         # Generate MIN node (MIN_PLAYER's turn)
                         amount_added = self.opponent_currBetAmount + 10 - self.own_currBetAmount
-                        self.children.append(Node(self.depth-1, 2, self.hole_cards, self.community_cards, self.opponent_currBetAmount+10, self.opponent_currBetAmount, self.own_totalBetAmount+amount_added, self.opponent_totalBetAmount, self.valid_actions, self.small_blind_player, self.current_street))
+                        self.children.append(Node(self.depth-1, 2, self.hole_cards, self.community_cards, self.opponent_currBetAmount+10, self.opponent_currBetAmount, self.own_totalBetAmount+amount_added, self.opponent_totalBetAmount, self.valid_actions, self.small_blind_player, self.current_street, self.weights))
                     elif action == "call":
                         # Generate a chance node (Round has ended, reveal community cards next)
                         amount_added = self.opponent_currBetAmount - self.own_currBetAmount
-                        self.children.append(Node(self.depth-1, 0, self.hole_cards, self.community_cards, self.opponent_currBetAmount, self.opponent_currBetAmount, self.own_totalBetAmount+amount_added, self.opponent_totalBetAmount, self.valid_actions, self.small_blind_player, self.current_street))
+                        self.children.append(Node(self.depth-1, 0, self.hole_cards, self.community_cards, self.opponent_currBetAmount, self.opponent_currBetAmount, self.own_totalBetAmount+amount_added, self.opponent_totalBetAmount, self.valid_actions, self.small_blind_player, self.current_street, self.weights))
             
             # MIN_PLAYER node
             elif self.node_type == 2:     
@@ -58,11 +58,11 @@ class Node(object):
                     elif action == "raise":
                         # Generate MIN node (MAX_PLAYER's turn)
                         amount_added = self.own_currBetAmount + 10 - self.opponent_currBetAmount
-                        self.children.append(Node(self.depth-1, 1, self.hole_cards, self.community_cards, self.own_currBetAmount, self.own_currBetAmount+10, self.own_totalBetAmount, self.opponent_totalBetAmount+amount_added, self.valid_actions, self.small_blind_player, self.current_street))
+                        self.children.append(Node(self.depth-1, 1, self.hole_cards, self.community_cards, self.own_currBetAmount, self.own_currBetAmount+10, self.own_totalBetAmount, self.opponent_totalBetAmount+amount_added, self.valid_actions, self.small_blind_player, self.current_street, self.weights))
                     elif action == "call":
                         # Generate a chance node (Round has ended, reveal community cards next)
                         amount_added = self.own_currBetAmount - self.opponent_currBetAmount
-                        self.children.append(Node(self.depth-1, 0, self.hole_cards, self.community_cards, self.own_currBetAmount, self.own_currBetAmount, self.own_totalBetAmount, self.opponent_totalBetAmount+amount_added, self.valid_actions, self.small_blind_player, self.current_street))
+                        self.children.append(Node(self.depth-1, 0, self.hole_cards, self.community_cards, self.own_currBetAmount, self.own_currBetAmount, self.own_totalBetAmount, self.opponent_totalBetAmount+amount_added, self.valid_actions, self.small_blind_player, self.current_street, self.weights))
 
             # Chance node
             elif self.node_type == 0:
@@ -81,7 +81,7 @@ class Node(object):
                     pickedCard = pickedCard_suit + pickedCard_number
                     new_community_cards.append(pickedCard)
                 
-                self.children.append(Node(self.depth-1, self.small_blind_player, self.hole_cards, new_community_cards, 0, 0, self.own_totalBetAmount, self.opponent_totalBetAmount, self.valid_actions, self.small_blind_player, self.current_street))
+                self.children.append(Node(self.depth-1, self.small_blind_player, self.hole_cards, new_community_cards, 0, 0, self.own_totalBetAmount, self.opponent_totalBetAmount, self.valid_actions, self.small_blind_player, self.current_street, self.weights))
 
     def evaluate(self):
         #return rand.randint(1, 100)        
