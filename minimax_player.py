@@ -5,6 +5,9 @@ from node import Node
 
 class MinimaxPlayer(BasePokerPlayer):
 
+  def __init__(self, weights):
+      self.weights = weights  
+
   def declare_action(self, valid_actions, hole_card, round_state):
     # valid_actions format => [raise_action_pp = pprint.PrettyPrinter(indent=2)
     # pp = pprint.PrettyPrinter(indent=2)
@@ -36,12 +39,12 @@ class MinimaxPlayer(BasePokerPlayer):
     opponent_totalBetAmount = get_opponentTotalBetAmount(round_state, current_street, small_blind_player)
     own_totalBetAmount = round_state['pot']['main']['amount'] - opponent_totalBetAmount
 
-    node = Node(depth, 1, hole_card, community_cards, own_currBetAmount, opponent_currBetAmount, own_totalBetAmount, opponent_totalBetAmount, valid_actions, small_blind_player, current_street)
+    node = Node(depth, 1, hole_card, community_cards, own_currBetAmount, opponent_currBetAmount, own_totalBetAmount, opponent_totalBetAmount, valid_actions, small_blind_player, current_street, self.weights)
     print("Built minimax tree")
     max = -1 * float('inf')
     best_action = None
     for child_node in node.children:
-      curr_value = find_minimax(child_node)
+      curr_value = find_minimax(child_node, -1 * float('inf'), float('inf'))
       if curr_value > max:
         max = curr_value
         best_action = convertToAction(child_node)
@@ -66,7 +69,7 @@ class MinimaxPlayer(BasePokerPlayer):
 def setup_ai():
   return MinimaxPlayer()
 
-def find_minimax(node):
+def find_minimax(node, alpha, beta):
   if type(node) == int:
     return node 
   elif node.depth == 0:
@@ -75,23 +78,31 @@ def find_minimax(node):
     if node.node_type == 1: # MAX_PLAYER node
       max = -1 * float('inf')
       for child_node in node.children:
-        curr_value = find_minimax(child_node)
+        curr_value = find_minimax(child_node, alpha, beta)
         if (curr_value > max): 
             max = curr_value
+        if (curr_value > alpha): #pruning
+            alpha = curr_value
+        if (beta <= alpha):
+            break
       return max
     elif node.node_type == 2: # MIN_PLAYER node
       min = 1 * float('inf')
       for child_node in node.children:
-        curr_value = find_minimax(child_node)
+        curr_value = find_minimax(child_node, alpha, beta)
         if (curr_value < min):
             min = curr_value
+        if (curr_value < alpha): #pruning
+            alpha = curr_value
+        if (beta <= alpha):
+            break
       return min
     elif node.node_type == 0: # Chance node
       # Take average of all chance nodes
       sum = 0
       num_nodes = 0
       for child_node in node.children:
-        curr_value = find_minimax(child_node)
+        curr_value = find_minimax(child_node, alpha, beta)
         sum += curr_value
         num_nodes += 1
       return sum / num_nodes
