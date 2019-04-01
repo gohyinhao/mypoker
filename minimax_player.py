@@ -29,6 +29,14 @@ class MinimaxPlayer(BasePokerPlayer):
     # action = call_action_info["action"]
     # return action  # action returned here is sent to the poker engine
     
+    def convertToAction(i):
+      if i <= 0:
+        return "fold"
+      elif i < self.weights[4]: 
+        return "call"
+      else:
+        return "raise"
+
     depth = 10 # ! Need to change this value for optimisation
     community_cards = round_state['community_card']
 
@@ -106,14 +114,6 @@ def find_minimax(node, alpha, beta):
         sum += curr_value
         num_nodes += 1
       return sum / num_nodes
-
-def convertToAction(i):
-  if i == 0:
-    return "fold"
-  elif i == 1:
-    return "call"
-  else:
-    return "raise"
 
 def get_opponentTotalBetAmount(round_state, current_street, small_blind_player):
   totalBet = 0
