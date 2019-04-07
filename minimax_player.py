@@ -30,7 +30,7 @@ class MinimaxPlayer(BasePokerPlayer):
         # action = call_action_info["action"]
         # return action  # action returned here is sent to the poker engine
 
-        depth = 10  # ! Need to change this value for optimisation
+        depth = 50  # ! Need to change this value for optimisation
         community_cards = round_state['community_card']
         current_street = round_state['street']
         small_blind_player = checkSmallBlind(round_state, current_street)
@@ -57,7 +57,7 @@ class MinimaxPlayer(BasePokerPlayer):
                     elif (action['uuid'] == min_player_id):
                         num_of_raise_by_min = num_of_raise_by_min + 1
 
-        node = Node(None, depth, 1, hole_card, community_cards, valid_actions, small_blind_player,
+        node = Node(None, False, depth, 1, hole_card, community_cards, valid_actions, small_blind_player,
                     current_street, self.weights, num_of_raise_in_street, num_of_raise_by_max, num_of_raise_by_min)
         print("Built minimax tree")
         max = -1 * float('inf')
@@ -90,7 +90,7 @@ class MinimaxPlayer(BasePokerPlayer):
 def find_minimax(node, alpha, beta):
     if type(node) == int:
         return node
-    elif node.depth == 0:
+    elif node.depth == 0 or node.isTerminal:
         return node.evaluate()
     else:
         if node.node_type == 1:  # MAX_PLAYER node
