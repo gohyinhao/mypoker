@@ -41,7 +41,7 @@ class Node(object):
 
                     if action == "fold":
                         # Represents a terminal node (MIN_PLAYER wins the pot)
-                        self.children.append(Node("fold", self.depth - 1, 0, self.hole_cards, self.community_cards, self.opponent_currBetAmount, self.opponent_currBetAmount, self.own_totalBetAmount+amount_added,
+                        self.children.append(Node("fold", self.depth - 1, 0, self.hole_cards, self.community_cards, self.opponent_currBetAmount, self.opponent_currBetAmount, self.own_totalBetAmount,
                                                   self.opponent_totalBetAmount, self.valid_actions, self.small_blind_player, self.current_street, self.weights, self.num_of_raise_in_street, self.num_of_raise_by_max, self.num_of_raise_by_min))
                     elif action == "raise":
                         # if max number of raise is reached, do not generate node for raise action
@@ -66,8 +66,8 @@ class Node(object):
 
                     if action == "fold":
                         # Represents a terminal node (MAX_PLAYER wins the pot)
-                        self.children.append(Node("fold", self.depth - 1, 0, self.hole_cards, self.community_cards, self.own_currBetAmount, self.own_currBetAmount, self.own_totalBetAmount, self.opponent_totalBetAmount +
-                                                  amount_added, self.valid_actions, self.small_blind_player, self.current_street, self.weights, self.num_of_raise_in_street, self.num_of_raise_by_max, self.num_of_raise_by_min))
+                        self.children.append(Node("fold", self.depth - 1, 0, self.hole_cards, self.community_cards, self.own_currBetAmount, self.own_currBetAmount, self.own_totalBetAmount, self.opponent_totalBetAmount,
+                                                  self.valid_actions, self.small_blind_player, self.current_street, self.weights, self.num_of_raise_in_street, self.num_of_raise_by_max, self.num_of_raise_by_min))
                     elif action == "raise":
                         # if max number of raise is reached, do not generate node for raise action
                         if (self.num_of_raise_by_min == 4 or self.num_of_raise_in_street == 4):
