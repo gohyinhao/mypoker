@@ -7,7 +7,8 @@ from myEval import evalFunction
 
 
 class Node(object):
-    def __init__(self, depth, node_type, hole_cards, community_cards, own_currBetAmount, opponent_currBetAmount, own_totalBetAmount, opponent_totalBetAmount, valid_actions, small_blind_player, current_street, weights, num_of_raise_in_street, num_of_raise_by_max, num_of_raise_by_min):
+    def __init__(self, action, depth, node_type, hole_cards, community_cards, own_currBetAmount, opponent_currBetAmount, own_totalBetAmount, opponent_totalBetAmount, valid_actions, small_blind_player, current_street, weights, num_of_raise_in_street, num_of_raise_by_max, num_of_raise_by_min):
+        self.action = action
         self.depth = depth
         self.node_type = node_type  # 0 if chance node, 1 if MAX_PLAYER, 2 if MIN_PLAYER
         self.hole_cards = hole_cards
@@ -40,7 +41,8 @@ class Node(object):
 
                     if action == "fold":
                         # Represents a terminal node (MIN_PLAYER wins the pot)
-                        self.children.append(-1*self.own_totalBetAmount)
+                        self.children.append(Node("fold", self.depth - 1, 0, self.hole_cards, self.community_cards, self.opponent_currBetAmount, self.opponent_currBetAmount, self.own_totalBetAmount+amount_added,
+                                                  self.opponent_totalBetAmount, self.valid_actions, self.small_blind_player, self.current_street, self.weights, self.num_of_raise_in_street, self.num_of_raise_by_max, self.num_of_raise_by_min))
                     elif action == "raise":
                         # if max number of raise is reached, do not generate node for raise action
                         if (self.num_of_raise_by_max == 4 or self.num_of_raise_in_street == 4):
@@ -48,12 +50,12 @@ class Node(object):
 
                         # Generate MIN node (MIN_PLAYER's turn)
                         amount_added = self.opponent_currBetAmount + 10 - self.own_currBetAmount
-                        self.children.append(Node(self.depth - 1, 2, self.hole_cards, self.community_cards, self.opponent_currBetAmount+10, self.opponent_currBetAmount, self.own_totalBetAmount+amount_added,
+                        self.children.append(Node("raise", self.depth - 1, 2, self.hole_cards, self.community_cards, self.opponent_currBetAmount+10, self.opponent_currBetAmount, self.own_totalBetAmount+amount_added,
                                                   self.opponent_totalBetAmount, self.valid_actions, self.small_blind_player, self.current_street, self.weights, self.num_of_raise_in_street + 1, self.num_of_raise_by_max + 1, self.num_of_raise_by_min))
                     elif action == "call":
                         # Generate a chance node (Round has ended, reveal community cards next)
                         amount_added = self.opponent_currBetAmount - self.own_currBetAmount
-                        self.children.append(Node(self.depth - 1, 0, self.hole_cards, self.community_cards, self.opponent_currBetAmount, self.opponent_currBetAmount, self.own_totalBetAmount+amount_added,
+                        self.children.append(Node("call", self.depth - 1, 0, self.hole_cards, self.community_cards, self.opponent_currBetAmount, self.opponent_currBetAmount, self.own_totalBetAmount+amount_added,
                                                   self.opponent_totalBetAmount, self.valid_actions, self.small_blind_player, self.current_street, self.weights, self.num_of_raise_in_street, self.num_of_raise_by_max, self.num_of_raise_by_min))
 
             # MIN_PLAYER node
@@ -64,7 +66,8 @@ class Node(object):
 
                     if action == "fold":
                         # Represents a terminal node (MAX_PLAYER wins the pot)
-                        self.children.append(1*self.opponent_totalBetAmount)
+                        self.children.append(Node("fold", self.depth - 1, 0, self.hole_cards, self.community_cards, self.own_currBetAmount, self.own_currBetAmount, self.own_totalBetAmount, self.opponent_totalBetAmount +
+                                                  amount_added, self.valid_actions, self.small_blind_player, self.current_street, self.weights, self.num_of_raise_in_street, self.num_of_raise_by_max, self.num_of_raise_by_min))
                     elif action == "raise":
                         # if max number of raise is reached, do not generate node for raise action
                         if (self.num_of_raise_by_min == 4 or self.num_of_raise_in_street == 4):
@@ -72,12 +75,12 @@ class Node(object):
 
                         # Generate MIN node (MAX_PLAYER's turn)
                         amount_added = self.own_currBetAmount + 10 - self.opponent_currBetAmount
-                        self.children.append(Node(self.depth - 1, 1, self.hole_cards, self.community_cards, self.own_currBetAmount, self.own_currBetAmount+10, self.own_totalBetAmount, self.opponent_totalBetAmount +
+                        self.children.append(Node("raise", self.depth - 1, 1, self.hole_cards, self.community_cards, self.own_currBetAmount, self.own_currBetAmount+10, self.own_totalBetAmount, self.opponent_totalBetAmount +
                                                   amount_added, self.valid_actions, self.small_blind_player, self.current_street, self.weights, self.num_of_raise_in_street + 1, self.num_of_raise_by_max, self.num_of_raise_by_min + 1))
                     elif action == "call":
                         # Generate a chance node (Round has ended, reveal community cards next)
                         amount_added = self.own_currBetAmount - self.opponent_currBetAmount
-                        self.children.append(Node(self.depth - 1, 0, self.hole_cards, self.community_cards, self.own_currBetAmount, self.own_currBetAmount, self.own_totalBetAmount, self.opponent_totalBetAmount +
+                        self.children.append(Node("call", self.depth - 1, 0, self.hole_cards, self.community_cards, self.own_currBetAmount, self.own_currBetAmount, self.own_totalBetAmount, self.opponent_totalBetAmount +
                                                   amount_added, self.valid_actions, self.small_blind_player, self.current_street, self.weights, self.num_of_raise_in_street, self.num_of_raise_by_max, self.num_of_raise_by_min))
 
             # Chance node
@@ -99,7 +102,7 @@ class Node(object):
                     pickedCard = pickedCard_suit + pickedCard_number
                     new_community_cards.append(pickedCard)
 
-                self.children.append(Node(self.depth - 1, self.small_blind_player, self.hole_cards, new_community_cards, 0, 0, self.own_totalBetAmount, self.opponent_totalBetAmount,
+                self.children.append(Node(None, self.depth - 1, self.small_blind_player, self.hole_cards, new_community_cards, 0, 0, self.own_totalBetAmount, self.opponent_totalBetAmount,
                                           self.valid_actions, self.small_blind_player, self.current_street, self.weights, 0, self.num_of_raise_by_max, self.num_of_raise_by_min))
 
     def evaluate(self):

@@ -30,14 +30,6 @@ class MinimaxPlayer(BasePokerPlayer):
         # action = call_action_info["action"]
         # return action  # action returned here is sent to the poker engine
 
-        def convertToAction(i):
-            if i <= 0:
-                return "fold"
-            elif i < self.weights[4]:
-                return "call"
-            else:
-                return "raise"
-
         depth = 10  # ! Need to change this value for optimisation
         community_cards = round_state['community_card']
         current_street = round_state['street']
@@ -53,8 +45,8 @@ class MinimaxPlayer(BasePokerPlayer):
         # get number of raises in this street by checking against action history in this street
         num_of_raise_in_street = 0
         street_action_history = round_state['action_histories'][current_street]
-        for i in range(len(street_action_history)):
-            if (street_action_history[i]['action'] == 'RAISE' or street_action_history[i]['action'] == 'BIGBLIND'):
+        for action in street_action_history:
+            if (action['action'] == 'RAISE' or action['action'] == 'BIGBLIND'):
                 num_of_raise_in_street = num_of_raise_in_street + 1
 
         # get number of raises by MAX_PLAYER and MIN_PLAYER in entire round by checking against entire action history
@@ -65,14 +57,14 @@ class MinimaxPlayer(BasePokerPlayer):
         action_history = round_state['action_histories']
         for street in action_history:
             street_action_history = action_history[street]
-            for i in range(len(street_action_history)):
-                if (street_action_history[i]['action'] == 'RAISE'):
-                    if (street_action_history[i]['uuid'] == max_player_id):
+            for action in street_action_history:
+                if (action['action'] == 'RAISE'):
+                    if (action['uuid'] == max_player_id):
                         num_of_raise_by_max = num_of_raise_by_max + 1
-                    elif (street_action_history[i]['uuid'] == min_player_id):
+                    elif (action['uuid'] == min_player_id):
                         num_of_raise_by_min = num_of_raise_by_min + 1
 
-        node = Node(depth, 1, hole_card, community_cards, own_currBetAmount, opponent_currBetAmount, own_totalBetAmount, opponent_totalBetAmount,
+        node = Node(None, depth, 1, hole_card, community_cards, own_currBetAmount, opponent_currBetAmount, own_totalBetAmount, opponent_totalBetAmount,
                     valid_actions, small_blind_player, current_street, self.weights, num_of_raise_in_street, num_of_raise_by_max, num_of_raise_by_min)
         print("Built minimax tree")
         max = -1 * float('inf')
@@ -82,7 +74,7 @@ class MinimaxPlayer(BasePokerPlayer):
                 child_node, -1 * float('inf'), float('inf'))
             if curr_value > max:
                 max = curr_value
-                best_action = convertToAction(child_node)
+                best_action = child_node.action
 
         return best_action
 
