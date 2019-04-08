@@ -4,7 +4,7 @@ import random
 
 # note: need to implement attribute called weights in MinimaxPlayer class.
 # weights should either be an array/list
-NUMBER_OF_WEIGHTS = 5
+NUMBER_OF_WEIGHTS = 4
 
 # learning rate that will affect how fast agent learns.
 # 1. leave it as a small constant
@@ -12,7 +12,7 @@ NUMBER_OF_WEIGHTS = 5
 learning_rate = 0.1
 
 # max number of training iterations where weights remains unchanged
-MAX_NUMBER_OF_ITERATIONS = 1000
+MAX_NUMBER_OF_ITERATIONS = 100
 
 # randomly initialized starting weights
 agent_weights = []
@@ -23,7 +23,7 @@ for x in range(NUMBER_OF_WEIGHTS):
 # boolean variable to check whether to replay past opponent
 replay = False
 number_of_replays = 0
-MAX_NUMBER_OF_REPLAYS_FOR_TIES = 5
+MAX_NUMBER_OF_REPLAYS_FOR_TIES = 2
 
 number_of_iterations = 0
 while number_of_iterations < MAX_NUMBER_OF_ITERATIONS:
@@ -37,8 +37,10 @@ while number_of_iterations < MAX_NUMBER_OF_ITERATIONS:
     # small_blind_amount: set to be 10 as per assessment
     config = setup_config(max_round=1000, initial_stack=1000, small_blind_amount=10)
 
-    config.register_player(name="my_agent", algorithm=MinimaxPlayer(agent_weights)) # need to update minimax player to take in weights
-    config.register_player(name="randomly_initialized_agent", algorithm=MinimaxPlayer(opponent_weights))    # need to update minimax player to take in weights
+    config.register_player(name="my_agent", algorithm=MinimaxPlayer(agent_weights))
+    config.register_player(name="randomly_initialized_agent", algorithm=MinimaxPlayer(opponent_weights))
+
+    print(agent_weights)
 
     game_result = start_poker(config, verbose=1)
 
@@ -77,7 +79,7 @@ while number_of_iterations < MAX_NUMBER_OF_ITERATIONS:
                 agent_weights[i] = (agent_weights[i] + opponent_weights[i]) / 2
             continue
 
-print(agent_weights)
+print("final weights: " + agent_weights)
 
 
 
