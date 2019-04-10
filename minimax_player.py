@@ -10,6 +10,8 @@ class MinimaxPlayer(BasePokerPlayer):
         self.weights = weights
 
     def declare_action(self, valid_actions, hole_card, round_state):
+        if (len(round_state['community_card']) == 5):
+            return 'call'
         # valid_actions format => [raise_action_pp = pprint.PrettyPrinter(indent=2)
         # pp = pprint.PrettyPrinter(indent=2)
         # print("------------ROUND_STATE(RANDOM)--------")
