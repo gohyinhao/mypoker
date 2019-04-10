@@ -98,7 +98,6 @@ class Node(object):
             # Chance node
             elif self.node_type == 0: 
                 # print("============== Reveal community cards ==============")
-                # ! Simply picks random card(s) at random without checking (to be improved later)
                 new_community_cards = self.community_cards[:]
                 isTerminal = False
                 if len(self.community_cards) == 0:
