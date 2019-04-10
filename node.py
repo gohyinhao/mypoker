@@ -29,7 +29,7 @@ class Node(object):
 
         # self.print_node()
 
-        if self.depth > 0 and len(self.community_cards) < 5:
+        if self.depth > 0: #and len(self.community_cards) < 5:
 
             # MAX_PLAYER node
             if self.node_type == 1:
@@ -45,14 +45,23 @@ class Node(object):
                         # if max number of raise is reached, do not generate node for raise action
                         if (self.num_of_raise_by_max == 4 or self.num_of_raise_in_street == 4):
                             continue
-
-                        # Generate MIN node (MIN_PLAYER's turn)
-                        self.children.append(Node("raise", False, self.depth - 1, 2, self.hole_cards, self.community_cards, self.valid_actions, self.small_blind_player,
-                                                  self.current_street, self.weights, self.num_of_raise_in_street + 1, self.num_of_raise_by_max + 1, self.num_of_raise_by_min))
+                        # If all five community cards are revealed, generate terminal node
+                        if len(self.community_cards) == 5:
+                            self.children.append(Node("raise", True, self.depth - 1, 2, self.hole_cards, self.community_cards, self.valid_actions, self.small_blind_player,
+                                                    self.current_street, self.weights, self.num_of_raise_in_street + 1, self.num_of_raise_by_max + 1, self.num_of_raise_by_min))
+                        # Else generate MIN node (MIN_PLAYER's turn)
+                        else:
+                            self.children.append(Node("raise", False, self.depth - 1, 2, self.hole_cards, self.community_cards, self.valid_actions, self.small_blind_player,
+                                                    self.current_street, self.weights, self.num_of_raise_in_street + 1, self.num_of_raise_by_max + 1, self.num_of_raise_by_min))
                     elif action == "call":
-                        # Generate a chance node (Round has ended, reveal community cards next)
-                        self.children.append(Node("call", False, self.depth - 1, 0, self.hole_cards, self.community_cards, self.valid_actions, self.small_blind_player,
-                                                  self.current_street, self.weights, self.num_of_raise_in_street, self.num_of_raise_by_max, self.num_of_raise_by_min))
+                        # If all five community cards are revealed, generate terminal node
+                        if len(self.community_cards) == 5:
+                            self.children.append(Node("call", True, self.depth - 1, 0, self.hole_cards, self.community_cards, self.valid_actions, self.small_blind_player,
+                                                    self.current_street, self.weights, self.num_of_raise_in_street, self.num_of_raise_by_max, self.num_of_raise_by_min))
+                        # Else generate a chance node (Round has ended, reveal community cards next)
+                        else:
+                            self.children.append(Node("call", False, self.depth - 1, 0, self.hole_cards, self.community_cards, self.valid_actions, self.small_blind_player,
+                                                    self.current_street, self.weights, self.num_of_raise_in_street, self.num_of_raise_by_max, self.num_of_raise_by_min))
 
             # MIN_PLAYER node
             elif self.node_type == 2:
@@ -68,17 +77,26 @@ class Node(object):
                         # if max number of raise is reached, do not generate node for raise action
                         if (self.num_of_raise_by_min == 4 or self.num_of_raise_in_street == 4):
                             continue
-
-                        # Generate MIN node (MAX_PLAYER's turn)
-                        self.children.append(Node("raise", False, self.depth - 1, 1, self.hole_cards, self.community_cards, self.valid_actions, self.small_blind_player,
-                                                  self.current_street, self.weights, self.num_of_raise_in_street + 1, self.num_of_raise_by_max, self.num_of_raise_by_min + 1))
+                        # If all five community cards are revealed, generate terminal node
+                        if len(self.community_cards) == 5:
+                            self.children.append(Node("raise", True, self.depth - 1, 1, self.hole_cards, self.community_cards, self.valid_actions, self.small_blind_player,
+                                                    self.current_street, self.weights, self.num_of_raise_in_street + 1, self.num_of_raise_by_max, self.num_of_raise_by_min + 1))
+                        # Else generate MIN node (MAX_PLAYER's turn)
+                        else:
+                            self.children.append(Node("raise", False, self.depth - 1, 1, self.hole_cards, self.community_cards, self.valid_actions, self.small_blind_player,
+                                                    self.current_street, self.weights, self.num_of_raise_in_street + 1, self.num_of_raise_by_max, self.num_of_raise_by_min + 1))
                     elif action == "call":
-                        # Generate a chance node (Round has ended, reveal community cards next)
-                        self.children.append(Node("call", False, self.depth - 1, 0, self.hole_cards, self.community_cards, self.valid_actions, self.small_blind_player,
-                                                  self.current_street, self.weights, self.num_of_raise_in_street, self.num_of_raise_by_max, self.num_of_raise_by_min))
+                        # If all five community cards are revealed, generate terminal node
+                        if len(self.community_cards) == 5:
+                            self.children.append(Node("call", True, self.depth - 1, 0, self.hole_cards, self.community_cards, self.valid_actions, self.small_blind_player,
+                                                    self.current_street, self.weights, self.num_of_raise_in_street, self.num_of_raise_by_max, self.num_of_raise_by_min))
+                        # Else generate a chance node (Round has ended, reveal community cards next)
+                        else:
+                            self.children.append(Node("call", False, self.depth - 1, 0, self.hole_cards, self.community_cards, self.valid_actions, self.small_blind_player,
+                                                    self.current_street, self.weights, self.num_of_raise_in_street, self.num_of_raise_by_max, self.num_of_raise_by_min))
 
             # Chance node
-            elif self.node_type == 0:
+            elif self.node_type == 0: 
                 # print("============== Reveal community cards ==============")
                 # ! Simply picks random card(s) at random without checking (to be improved later)
                 new_community_cards = self.community_cards[:]
@@ -89,12 +107,24 @@ class Node(object):
                         pickedCard_number = rand.choice(
                             ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'])
                         pickedCard = pickedCard_suit + pickedCard_number
+                        # check if pickedCard already out
+                        while pickedCard in (self.hole_cards or new_community_cards):
+                            pickedCard_suit = rand.choice(['C', 'D', 'H', 'S'])
+                            pickedCard_number = rand.choice(
+                                ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'])
+                            pickedCard = pickedCard_suit + pickedCard_number
                         new_community_cards.append(pickedCard)
                 else:
                     pickedCard_suit = rand.choice(['C', 'D', 'H', 'S'])
                     pickedCard_number = rand.choice(
                         ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'])
                     pickedCard = pickedCard_suit + pickedCard_number
+                    # check if pickedCard already out
+                    while pickedCard in (self.hole_cards or new_community_cards):
+                        pickedCard_suit = rand.choice(['C', 'D', 'H', 'S'])
+                        pickedCard_number = rand.choice(
+                            ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'])
+                        pickedCard = pickedCard_suit + pickedCard_number
                     new_community_cards.append(pickedCard)
                     if (len(new_community_cards) == 5):
                         isTerminal = True
