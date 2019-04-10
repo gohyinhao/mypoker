@@ -31,21 +31,28 @@ while number_of_iterations < MAX_NUMBER_OF_ITERATIONS:
         # randomly initialize opponent weights if not replaying
         for x in range(NUMBER_OF_WEIGHTS):
             opponent_weights.append(random.random())
-    
+
     # max_round: number of times players can play against each. set to be the same as number of rounds in actual assessment
     # initial_stack: starting money. set to be 1000 as per assessment
     # small_blind_amount: set to be 10 as per assessment
-    config = setup_config(max_round=1000, initial_stack=1000, small_blind_amount=10)
+    config = setup_config(
+        max_round=1000, initial_stack=1000, small_blind_amount=10)
 
-    config.register_player(name="my_agent", algorithm=MinimaxPlayer(agent_weights))
-    config.register_player(name="randomly_initialized_agent", algorithm=MinimaxPlayer(opponent_weights))
+    config.register_player(
+        name="my_agent", algorithm=MinimaxPlayer(agent_weights))
+    config.register_player(name="randomly_initialized_agent",
+                           algorithm=MinimaxPlayer(opponent_weights))
 
-    print(agent_weights)
+    print("agent: ", agent_weights)
+    print("opponent: ", opponent_weights)
 
     game_result = start_poker(config, verbose=1)
 
     my_agent_end_stack = game_result["players"][0]["stack"]
     opponent_end_stack = game_result["players"][1]["stack"]
+
+    print("agent stack: ", my_agent_end_stack)
+    print("opponent stack: ", opponent_end_stack)
 
     if my_agent_end_stack > opponent_end_stack:
         # agent won so weights remains unchanged
@@ -61,7 +68,8 @@ while number_of_iterations < MAX_NUMBER_OF_ITERATIONS:
 
         for i in range(NUMBER_OF_WEIGHTS):
             delta_weight = opponent_weights[i] - agent_weights[i]
-            agent_weights[i] = agent_weights[i] + (learning_rate * delta_weight)
+            agent_weights[i] = agent_weights[i] + \
+                (learning_rate * delta_weight)
         continue
     else:
         # tie so replay to eliminate randomness
@@ -80,7 +88,3 @@ while number_of_iterations < MAX_NUMBER_OF_ITERATIONS:
             continue
 
 print("final weights: " + agent_weights)
-
-
-
-
