@@ -29,6 +29,7 @@ number_of_iterations = 0
 while number_of_iterations < MAX_NUMBER_OF_ITERATIONS:
     if not replay:
         # randomly initialize opponent weights if not replaying
+        opponent_weights = []
         for x in range(NUMBER_OF_WEIGHTS):
             opponent_weights.append(random.random())
 
