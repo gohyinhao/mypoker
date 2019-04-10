@@ -88,4 +88,4 @@ while number_of_iterations < MAX_NUMBER_OF_ITERATIONS:
                 agent_weights[i] = (agent_weights[i] + opponent_weights[i]) / 2
             continue
 
-print("final weights: " + agent_weights)
+print("final weights: ", agent_weights)
