@@ -23,7 +23,7 @@ for x in range(NUMBER_OF_WEIGHTS):
 # boolean variable to check whether to replay past opponent
 replay = False
 number_of_replays = 0
-MAX_NUMBER_OF_REPLAYS_FOR_TIES = 2
+MAX_NUMBER_OF_REPLAYS_FOR_TIES = 3
 
 number_of_iterations = 0
 while number_of_iterations < MAX_NUMBER_OF_ITERATIONS:
@@ -37,7 +37,7 @@ while number_of_iterations < MAX_NUMBER_OF_ITERATIONS:
     # initial_stack: starting money. set to be 1000 as per assessment
     # small_blind_amount: set to be 10 as per assessment
     config = setup_config(
-        max_round=1000, initial_stack=1000, small_blind_amount=10)
+        max_round=500, initial_stack=10000, small_blind_amount=20)
 
     config.register_player(
         name="my_agent", algorithm=MinimaxPlayer(agent_weights))
