@@ -59,7 +59,7 @@ class MinimaxPlayer(BasePokerPlayer):
 
         node = Node(None, False, depth, 1, hole_card, community_cards, valid_actions, small_blind_player,
                     current_street, self.weights, num_of_raise_in_street, num_of_raise_by_max, num_of_raise_by_min)
-        print("Built minimax tree")
+        # print("Built minimax tree")
         max = -1 * float('inf')
         best_action = None
         for child_node in node.children:

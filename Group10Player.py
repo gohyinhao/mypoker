@@ -1,12 +1,12 @@
 from pypokerengine.players import BasePokerPlayer
 # import random as rand
 import pprint
-from node import Node
+from Group10Node import Node
 
 
-class MinimaxPlayer(BasePokerPlayer):
+class Group10Player(BasePokerPlayer):
 
-    def __init__(self, weights):
+    def __init__(self):
         self.weights = [0.5719561761732826, 0.06875975502152562, 0.5162121322003739, 0.6633226510229807]
 
     def declare_action(self, valid_actions, hole_card, round_state):
@@ -195,5 +195,5 @@ def get_ownCurrBetAmount(round_state, current_street):
             return round_state['action_histories'][current_street][-2]['amount']
 
 
-def setup_ai(weights):
-    return MinimaxPlayer(weights)
+def setup_ai():
+    return Group10Player()
