@@ -7,7 +7,7 @@ from Group10Node import Node
 class Group10Player(BasePokerPlayer):
 
     def __init__(self):
-        self.weights = [0.5719561761732826, 0.06875975502152562, 0.5162121322003739, 0.6633226510229807]
+        self.weights = [0.52284350929963, 0.06465296000311718, 0.37595334425448723, 0.605750450066664]
 
     def declare_action(self, valid_actions, hole_card, round_state):
         # valid_actions format => [raise_action_pp = pprint.PrettyPrinter(indent=2)
