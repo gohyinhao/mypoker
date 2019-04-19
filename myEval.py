@@ -225,6 +225,6 @@ class evalFunction(object):
         if self.action == "fold":
             multiplier = -1
         elif self.action == "call" or self.action == "raise":
-            multiplier = -1
+            multiplier = 1
 
         return self.weights[5] * multiplier * self.own_totalBetAmount

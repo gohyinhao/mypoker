@@ -151,7 +151,7 @@ class Node(object):
                 if self.current_street == "river" or self.current_street == "showdown":
                     next_street = "showdown"
 
-                self.children.append(Node(None, isTerminal, self.depth - 1, self.small_blind_player, self.hole_cards, new_community_cards, self.valid_actions,
+                self.children.append(Node(None, False, self.depth - 1, self.small_blind_player, self.hole_cards, new_community_cards, self.valid_actions,
                                           self.small_blind_player, next_street, self.weights, 0, self.num_of_raise_by_max, self.num_of_raise_by_min, 0, 0, self.own_totalBetAmount, self.opponent_totalBetAmount))
 
     def evaluate(self):
