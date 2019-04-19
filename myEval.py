@@ -204,3 +204,16 @@ class evalFunction(object):
                 straightValue = straightValue - 1
 
         return self.weights[3] * straightValue
+
+    def streetValue(self):
+        streetValue = 0
+        if self.current_street == "preflop":
+            streetValue = 0
+        elif self.current_street == "flop":
+            streetValue = 3
+        elif self.current_street == "turn":
+            streetValue = 4
+        elif self.current_street == "river" or self.current_street == "showdown":
+            streetValue = 5
+
+        return self.weights[4] * streetValue
