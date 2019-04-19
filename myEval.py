@@ -6,7 +6,6 @@ class evalFunction(object):
         self.current_street = current_street
         self.weights = weights
 
-    
     def baseValue(self):
         if self.hole_cards[0][1] == 'A':
             value1 = 14
@@ -20,7 +19,7 @@ class evalFunction(object):
             value1 = 10
         else:
             value1 = int(self.hole_cards[0][1])
-        
+
         if self.hole_cards[1][1] == 'A':
             value2 = 14
         elif self.hole_cards[1][1] == 'K':
@@ -41,7 +40,7 @@ class evalFunction(object):
             highCard = value2
             lowCard = value1
 
-        #Raise pocket 10s and above, Call pocket 6s and above, Fold otherwise
+        # Raise pocket 10s and above, Call pocket 6s and above, Fold otherwise
         if highCard == lowCard:
             if highCard >= 10:
                 baseValue = 1
@@ -49,7 +48,7 @@ class evalFunction(object):
                 baseValue = 0
             else:
                 baseValue = -1
-        #Raise AQ and above, Call A6 and above, Fold otherwise
+        # Raise AQ and above, Call A6 and above, Fold otherwise
         elif highCard == 14:
             if lowCard >= 12:
                 baseValue = 1
@@ -57,7 +56,7 @@ class evalFunction(object):
                 baseValue = 1
             else:
                 baseValue = -1
-        #Raise if total value is above 20 or connected, Fold otherwise
+        # Raise if total value is above 20 or connected, Fold otherwise
         elif (highCard + lowCard) >= 20 or (highCard-1) == lowCard:
             baseValue = 0
         else:
@@ -97,7 +96,7 @@ class evalFunction(object):
         return self.weights[1] * pairValue
 
     def flushValue(self):
-        
+
         def cardValue(card):
             if card[1] == 'A':
                 value = 14
@@ -111,9 +110,9 @@ class evalFunction(object):
                 value = 10
             else:
                 value = int(card[1])
-            return value        
+            return value
 
-        # Minimum number of cards that must be suited for a possibility for a flush      
+        # Minimum number of cards that must be suited for a possibility for a flush
         if self.current_street == "preflop":
             minSuits = 10000
         if self.current_street == "flop":
@@ -171,7 +170,7 @@ class evalFunction(object):
 
         # print(flushValue)
         return self.weights[2] * flushValue
-                
+
     def straightValue(self):
 
         def cardValue(card):
@@ -189,27 +188,27 @@ class evalFunction(object):
                 value = int(card[1])
             return value
 
-        #Custom comparator to sort cards
+        # Custom comparator to sort cards
         def cardComparator(card1, card2):
             return cardValue(card2) - cardValue(card1)
 
         straightValue = 1
         straightList = []
         combinedCards = self.community_cards + self.hole_cards
-        sortedCards = sorted(combinedCards, cmp = cardComparator)
+        sortedCards = sorted(combinedCards, cmp=cardComparator)
 
-        #Store card values in list
+        # Store card values in list
         for card in sortedCards:
             straightList.append(cardValue(card))
-        
-        #Ace can be 14 or 1
+
+        # Ace can be 14 or 1
         if 14 in straightList:
             straightList.append(1)
 
-        #Count number of consecutive cards
+        # Count number of consecutive cards
         highCard = straightList[0]
         for idx in range(len(straightList)-1):
-            if straightList[idx] == straightList[idx+1] +1:
+            if straightList[idx] == straightList[idx+1] + 1:
                 straightValue = straightValue + 1
             else:
                 straightValue = straightValue - 1
