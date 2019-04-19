@@ -4,7 +4,7 @@ import random
 
 # note: need to implement attribute called weights in MinimaxPlayer class.
 # weights should either be an array/list
-NUMBER_OF_WEIGHTS = 4
+NUMBER_OF_WEIGHTS = 6
 
 # learning rate that will affect how fast agent learns.
 # 1. leave it as a small constant
