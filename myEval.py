@@ -40,27 +40,17 @@ class evalFunction(object):
             highCard = value2
             lowCard = value1
 
-        # Raise pocket 10s and above, Call pocket 6s and above, Fold otherwise
+        # Raise pocket 8s and above, Call otherwise
         if highCard == lowCard:
-            if highCard >= 10:
+            if highCard >= 8:
                 baseValue = 1
-            elif highCard >= 6:
+            else:
                 baseValue = 0
-            else:
-                baseValue = -1
-        # Raise AQ and above, Call A6 and above, Fold otherwise
-        elif highCard == 14:
-            if lowCard >= 12:
-                baseValue = 1
-            elif lowCard >= 6:
-                baseValue = 1
-            else:
-                baseValue = -1
-        # Raise if total value is above 20 or connected, Fold otherwise
-        elif (highCard + lowCard) >= 20 or (highCard-1) == lowCard:
-            baseValue = 0
+        # Raise if total value is above 14 or connected, Call otherwise
+        elif (highCard + lowCard) >= 14 or (highCard-1) == lowCard:
+            baseValue = 1
         else:
-            baseValue = -1
+            baseValue = 0
 
         return self.weights[0] * baseValue
 

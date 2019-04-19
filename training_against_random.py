@@ -1,6 +1,7 @@
 from pypokerengine.api.game import setup_config, start_poker
 from minimax_player import MinimaxPlayer
 from randomplayer import RandomPlayer
+from raise_player import RaisedPlayer
 import random
 
 # note: need to implement attribute called weights in MinimaxPlayer class.
