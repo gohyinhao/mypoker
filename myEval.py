@@ -85,9 +85,9 @@ class evalFunction(object):
         # Count number of community cards that are the same as your hand
         for cards in self.community_cards:
             if cards[1] == self.hole_cards[0][1] or cards[1] == self.hole_cards[1][1]:
-                pairValue = pairValue + cardValue(card)
+                pairValue = pairValue + cardValue(cards)
             else:
-                pairValue = pairValue - cardValue(card)
+                pairValue = pairValue - cardValue(cards)
 
         # Higher value if pocket pair
         if self.hole_cards[0][1] == self.hole_cards[1][1]:
