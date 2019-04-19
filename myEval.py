@@ -41,7 +41,7 @@ class evalFunction(object):
             highCard = value2
             lowCard = value1
 
-        
+        #Raise pocket 10s and above, Call pocket 6s and above, Fold otherwise
         if highCard == lowCard:
             if highCard >= 10:
                 baseValue = 1
@@ -49,6 +49,7 @@ class evalFunction(object):
                 baseValue = 0
             else:
                 baseValue = -1
+        #Raise AQ and above, Call A6 and above, Fold otherwise
         elif highCard == 14:
             if lowCard >= 12:
                 baseValue = 1
@@ -56,6 +57,9 @@ class evalFunction(object):
                 baseValue = 1
             else:
                 baseValue = -1
+        #Raise if total value is above 20 or connected, Fold otherwise
+        elif (highCard + lowCard) >= 20 or (highCard-1) == lowCard:
+            baseValue = 0
         else:
             baseValue = -1
 
@@ -64,16 +68,31 @@ class evalFunction(object):
     def pairValue(self):
         pairValue = 0
 
+        def cardValue(card):
+            if card[1] == 'A':
+                value = 14
+            elif card[1] == 'K':
+                value = 13
+            elif card[1] == 'Q':
+                value = 12
+            elif card[1] == 'J':
+                value = 11
+            elif card[1] == 'T':
+                value = 10
+            else:
+                value = int(card[1])
+            return value
+
         # Count number of community cards that are the same as your hand
         for cards in self.community_cards:
             if cards[1] == self.hole_cards[0][1] or cards[1] == self.hole_cards[1][1]:
-                pairValue = pairValue + 1
+                pairValue = pairValue + cardValue(card)
             else:
-                pairValue = pairValue - 1
+                pairValue = pairValue - cardValue(card)
 
         # Higher value if pocket pair
         if self.hole_cards[0][1] == self.hole_cards[1][1]:
-            pairValue = pairValue + 1
+            pairValue = pairValue * 2
 
         return self.weights[1] * pairValue
 
