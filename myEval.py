@@ -1,10 +1,12 @@
 class evalFunction(object):
 
-    def __init__(self, hole_cards, community_cards, current_street, weights):
+    def __init__(self, hole_cards, community_cards, current_street, weights, own_totalBetAmount, action):
         self.hole_cards = hole_cards
         self.community_cards = community_cards
         self.current_street = current_street
         self.weights = weights
+        self.own_totalBetAmount = own_totalBetAmount
+        self.action = action
 
     def baseValue(self):
         if self.hole_cards[0][1] == 'A':
@@ -217,3 +219,12 @@ class evalFunction(object):
             streetValue = 5
 
         return self.weights[4] * streetValue
+
+    def potValue(self):
+        multiplier = 0
+        if self.action == "fold":
+            multiplier = -1
+        elif self.action == "call" or self.action == "raise":
+            multiplier = -1
+
+        return self.weights[5] * multiplier * self.own_totalBetAmount

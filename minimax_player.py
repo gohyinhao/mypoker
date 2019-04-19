@@ -34,6 +34,13 @@ class MinimaxPlayer(BasePokerPlayer):
         community_cards = round_state['community_card']
         current_street = round_state['street']
         small_blind_player = checkSmallBlind(round_state, current_street)
+        own_currBetAmount = get_ownCurrBetAmount(round_state, current_street)
+        opponent_currBetAmount = get_opponentCurrBetAmount(
+            round_state, current_street)
+        opponent_totalBetAmount = get_opponentTotalBetAmount(
+            round_state, current_street, small_blind_player)
+        own_totalBetAmount = round_state['pot']['main']['amount'] - \
+            opponent_totalBetAmount
 
         # get number of raises in this street by checking against action history in this street
         num_of_raise_in_street = 0
@@ -58,7 +65,7 @@ class MinimaxPlayer(BasePokerPlayer):
                         num_of_raise_by_min = num_of_raise_by_min + 1
 
         node = Node(None, False, depth, 1, hole_card, community_cards, valid_actions, small_blind_player,
-                    current_street, self.weights, num_of_raise_in_street, num_of_raise_by_max, num_of_raise_by_min)
+                    current_street, self.weights, num_of_raise_in_street, num_of_raise_by_max, num_of_raise_by_min, own_currBetAmount, opponent_currBetAmount, own_totalBetAmount, opponent_totalBetAmount)
         # print("Built minimax tree")
         max = -1 * float('inf')
         best_action = None
